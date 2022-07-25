@@ -58,31 +58,44 @@ impl <T: std::fmt::Debug> Stack<T> where T: Clone {
         //    dealloc(ptr_node as *mut u8, Layout::new::<Node<T>>());
         //}
     }
+
+    fn pop(&mut self)->Option<T> {
+        if self.head.is_null() {
+            Option::None
+        }else{
+            let ptr_result: *mut _ = self.head;
+            unsafe{
+                //let ptr_result: *mut _ = Box::into_raw(Box::new(*self.head));
+                //(*self.head).next = ptr_result;
+                self.head = (*self.head).next;
+                //println!("ptr_result = {:?}", (*ptr_result).elem);
+                Option::Some((*ptr_result).elem.clone())
+            }
+        }
+        //unimplemented!();
+        //Option::None
+    }
 }
 
 fn main() {
     let mut stack: Stack<i32> = Stack::new();
-    //let v = vec![2,3,5,8];
-    //for i in &v{
-    //    stack.push(*i);
-    //    //println!("i={:?}", i);  
-    //}
    
-    for i in 1..100 {
+    for i in 1..10 {
         stack.push(i);
     }
 
     let mut ptr_move: *mut _ = stack.head;
-    let mut counter = 0;
+    //let mut counter = 0;
     while !ptr_move.is_null()   {
-        unsafe{
-            //println!("node = {:?}", *(*ptr_move).next);
-            println!("elem = {:?}", (*ptr_move).elem);
-            ptr_move = (*ptr_move).next;
-        }
-        counter += 1;
+        //unsafe{
+        //    //println!("node = {:?}", *(*ptr_move).next);
+        //    println!("elem = {:?}", (*ptr_move).elem);
+        //    ptr_move = (*ptr_move).next;
+        //}
+        //counter += 1;
+        println!("{:?}", stack.pop());
+        ptr_move = stack.head
     }
-    println!("{:?}", stack);
-
-
+    println!("{:?}", stack.pop());
+    //println!("{:?}", stack);
 }
