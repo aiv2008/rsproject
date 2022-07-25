@@ -3,7 +3,9 @@
 
 use std::ptr;
 use std::{
-    alloc::{dealloc, Layout},
+    alloc::{
+        dealloc, 
+        Layout},
     ptr::drop_in_place,
 };
 
@@ -40,12 +42,12 @@ impl <T: std::fmt::Debug> Stack<T> where T: Clone {
         //println!("head_1={:?}", self.head);
         //let ptr_move = self.head.clone();
 
-        let mut new_node = Node{
+        let new_node = Node{
             elem: elem,
             //next: ptr::null_mut(),
             next: self.head,
         } ;
-        println!("new_node = {:?}",new_node);
+        //println!("new_node = {:?}",new_node);
 
         //new_node.next = self.head;
         //let ptr_node: *mut _ = &mut new_node as *mut _;
@@ -75,6 +77,16 @@ impl <T: std::fmt::Debug> Stack<T> where T: Clone {
         //unimplemented!();
         //Option::None
     }
+
+    fn iter(&self) {
+        let mut ptr_move: *mut _ = self.head;
+        while !ptr_move.is_null() {
+            unsafe{
+                println!("{:?}", (*ptr_move).elem);
+                ptr_move = (*ptr_move).next;
+            }
+        }
+    }
 }
 
 fn main() {
@@ -84,18 +96,12 @@ fn main() {
         stack.push(i);
     }
 
-    let mut ptr_move: *mut _ = stack.head;
-    //let mut counter = 0;
-    while !ptr_move.is_null()   {
-        //unsafe{
-        //    //println!("node = {:?}", *(*ptr_move).next);
-        //    println!("elem = {:?}", (*ptr_move).elem);
-        //    ptr_move = (*ptr_move).next;
-        //}
-        //counter += 1;
-        println!("{:?}", stack.pop());
-        ptr_move = stack.head
-    }
-    println!("{:?}", stack.pop());
+    //let mut ptr_move: *mut _ = stack.head;
+    //while !ptr_move.is_null()   {
+    //    println!("{:?}", stack.pop());
+    //    ptr_move = stack.head
+    //}
+    //println!("{:?}", stack.pop());
+    stack.iter();
     //println!("{:?}", stack);
 }
