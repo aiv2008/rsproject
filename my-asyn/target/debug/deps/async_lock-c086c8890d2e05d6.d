@@ -1,0 +1,11 @@
+/home/anson/rsproject/my-asyn/target/debug/deps/async_lock-c086c8890d2e05d6.rmeta: /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/lib.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/barrier.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/mutex.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/rwlock.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/semaphore.rs
+
+/home/anson/rsproject/my-asyn/target/debug/deps/libasync_lock-c086c8890d2e05d6.rlib: /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/lib.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/barrier.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/mutex.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/rwlock.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/semaphore.rs
+
+/home/anson/rsproject/my-asyn/target/debug/deps/async_lock-c086c8890d2e05d6.d: /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/lib.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/barrier.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/mutex.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/rwlock.rs /home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/semaphore.rs
+
+/home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/lib.rs:
+/home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/barrier.rs:
+/home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/mutex.rs:
+/home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/rwlock.rs:
+/home/anson/.cargo/registry/src/mirrors.ustc.edu.cn-61ef6e0cd06fb9b8/async-lock-2.5.0/src/semaphore.rs:
