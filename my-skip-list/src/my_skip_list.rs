@@ -61,7 +61,7 @@ impl SkipList {
                             break;
                         }
                     }
-                    println!("ptr_mut.is_null: {}",  ptr_mut.is_null());
+                    //println!("ptr_mut.is_null: {}",  ptr_mut.is_null());
                     ptr_mut = (*ptr_mut).next;
                 }
                 
@@ -76,6 +76,29 @@ impl SkipList {
         //unimplemented!();
     }
 
+    pub fn iter(&self){
+        for ptr_node in &self.head{
+            //let mut ptr_mut: *mut _ = ptr_node as *mut _;
+            let mut ptr_mut = *ptr_node;
+            while !ptr_mut.is_null() {
+                unsafe{
+                    print!("{} ", (*ptr_mut).val);
+                    if !(*ptr_mut).next.is_null(){
+                        print!("{} ",(*(*ptr_mut).next).val);
+                    }else{
+                        print!("null");
+                    }
+                    if !(*ptr_mut).down.is_null(){
+                        print!("{} ",(*(*ptr_mut).down).val);
+                    }else{
+                        print!("null");
+                    }
+                    println!("");
+                    ptr_mut = (*ptr_mut).next;
+                }
+            }
+        }
+    }
 
     pub fn insert(&mut self, _val: i32 ) {
         let new_node = Node::new(_val);
@@ -123,7 +146,7 @@ impl SkipList {
                            }
                         }
                     }
-                    println!("i={}",  i);
+                    //println!("i={}",  i);
                     i-=1;
                 }
 
