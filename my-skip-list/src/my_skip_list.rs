@@ -44,6 +44,11 @@ impl SkipList {
        }
        //unimplemented!();
     }
+
+    pub fn len(&self)->usize{
+        self.head.len()
+    }
+
     //搜索节点，若存在则返回
     pub fn search(&self, _val: i32) -> bool {
         let mut bl_result = false;
@@ -66,11 +71,6 @@ impl SkipList {
                 }
                 
             }
-            //if ptr_mut.is_null(){
-            //    return false;
-            //}else{
-            //    return true;
-            //}
         }
         bl_result
         //unimplemented!();
@@ -107,20 +107,16 @@ impl SkipList {
         }else {
             //let mut ptr_move: *mut _ = self.head[self.head.len()-1];
             if !self.search(_val) {//若找不到元素，则插入
-                let rand_pos =  (rand::thread_rng()).gen_range(1..(2*self.head.len()));
-                //println!("range={}", rng.gen_range(1..6));
-                //let new_node = Node::new(_val);
+                //println!("2times is {}", 2*self.head.len());
+                let rand_pos =  (rand::thread_rng()).gen_range(1..(3*self.head.len()+1));
                 let pos = cmp::min(rand_pos, self.head.len());
+                //println!("rand_pos={}, self.head={}, pos={}",rand_pos, self.head.len(), pos);
                 let mut i:i32 = (pos as i32) -1;
                 let mut ptr_mut: *mut Node = ptr::null_mut();
                 let mut ptr_start: *mut Node = ptr::null_mut();
-                //let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
                 while i >=0 {
                     ptr_start = self.head[i as usize];
-                    //ptr_mut = self.head[i];
                     ptr_mut = ptr_start;
-                    //let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
-                    //while !ptr_mut.is_null(){
                     
                     unsafe{
                         while !(*ptr_mut).next.is_null(){
@@ -146,12 +142,14 @@ impl SkipList {
                            }
                         }
                     }
-                    //println!("i={}",  i);
                     i-=1;
                 }
 
-                if rand_pos > self.head.len() {
-                    for _ in rand_pos..self.head.len(){
+                let max_ele = cmp::max(rand_pos,self.head.len()); 
+                if max_ele> self.head.len() {
+                    //println!("---enter here---, rand_pos={}, max_ele is {}",rand_pos, max_ele);
+                    let self_head_len = self.head.len();
+                    for _ in self_head_len..max_ele {
                         let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
                         unsafe{
                             (*new_node_raw).down = ptr_start;
