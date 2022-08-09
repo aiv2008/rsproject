@@ -34,6 +34,22 @@ impl Node{
         }
         //unimplemented!();
     }
+
+    fn new_n_inf()->Self{
+        Node{
+            val: std::i32::MIN,
+            next: ptr::null_mut(),
+            down: ptr::null_mut(),
+        }
+    }
+
+    fn new_p_inf()->Self{
+        Node{
+            val: std::i32::MAX,
+            next: ptr::null_mut(),
+            down: ptr::null_mut(),
+        }
+    }
 }
 
 impl SkipList {
@@ -77,47 +93,58 @@ impl SkipList {
     }
 
     pub fn iter(&self){
-        for ptr_node in &self.head{
-            //let mut ptr_mut: *mut _ = ptr_node as *mut _;
-            let mut ptr_mut = *ptr_node;
+        //for ptr_node in &self.head{
+        for i in 0..self.head.len() {
+            println!("--begin---");
+            //let mut ptr_mut = *ptr_node;
+            let mut ptr_mut = self.head[self.head.len()-1-i];
             while !ptr_mut.is_null() {
                 unsafe{
-                    print!("{} ", (*ptr_mut).val);
-                    if !(*ptr_mut).next.is_null(){
-                        print!("{} ",(*(*ptr_mut).next).val);
-                    }else{
-                        print!("null");
+                    //遇到头节点和尾节点不访问
+                    if (*ptr_mut).val != std::i32::MAX &&  (*ptr_mut).val != std::i32::MIN {
+                        print!("{}: {:?}, ", (*ptr_mut).val, ptr_mut);
+                        if !(*ptr_mut).next.is_null(){
+                            print!("{}: {:?}, ",(*(*ptr_mut).next).val, (*ptr_mut).next);
+                        }else{
+                            print!("null, ");
+                        }
+                        if !(*ptr_mut).down.is_null(){
+                            print!("{}: {:?}, ",(*(*ptr_mut).down).val, (*ptr_mut).down);
+                        }else{
+                            print!("null, ");
+                        }
+                        println!("");
                     }
-                    if !(*ptr_mut).down.is_null(){
-                        print!("{} ",(*(*ptr_mut).down).val);
-                    }else{
-                        print!("null");
-                    }
-                    println!("");
                     ptr_mut = (*ptr_mut).next;
                 }
             }
         }
     }
 
+    //前后各加入一个节点，分别是最小值和最大值，方便比较插入
     pub fn insert(&mut self, _val: i32 ) {
-        let new_node = Node::new(_val);
+        let mut new_node = Node::new(_val);
         if self.head.is_empty() {
-            self.head.push(Box::into_raw(Box::new(new_node.clone())));
+            let mut new_n_node = Node::new_n_inf();
+            let  new_p_node = Node::new_p_inf();
+            new_n_node.next = Box::into_raw(Box::new(new_node.clone())) ;
+            //new_node.next = Box::into_raw(Box::new(new_p_node.clone())) ;
+            unsafe{
+                (*new_n_node.next).next = Box::into_raw(Box::new(new_p_node.clone())) ;
+            }
+            self.head.push(Box::into_raw(Box::new(new_n_node.clone())));
+            //self.head.push(Box::into_raw(Box::new(new_node.clone())));
         }else {
             //let mut ptr_move: *mut _ = self.head[self.head.len()-1];
             if !self.search(_val) {//若找不到元素，则插入
-                //println!("2times is {}", 2*self.head.len());
-                let rand_pos =  (rand::thread_rng()).gen_range(1..(3*self.head.len()+1));
+                let rand_pos =  (rand::thread_rng()).gen_range(1..(2*self.head.len()+1));
                 let pos = cmp::min(rand_pos, self.head.len());
-                //println!("rand_pos={}, self.head={}, pos={}",rand_pos, self.head.len(), pos);
                 let mut i:i32 = (pos as i32) -1;
                 let mut ptr_mut: *mut Node = ptr::null_mut();
                 let mut ptr_start: *mut Node = ptr::null_mut();
                 while i >=0 {
                     ptr_start = self.head[i as usize];
                     ptr_mut = ptr_start;
-                    
                     unsafe{
                         while !(*ptr_mut).next.is_null(){
                             if _val < (*(*ptr_mut).next).val{
@@ -133,6 +160,7 @@ impl SkipList {
                             ptr_mut = (*ptr_mut).next;
                         }
                         if (*ptr_mut).next.is_null(){
+                            println!("(*ptr_mut).val is {}", (*ptr_mut).val);
                            let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
                            (*ptr_mut).next = new_node_raw;
                            while !(*ptr_mut).down.is_null(){
@@ -147,14 +175,22 @@ impl SkipList {
 
                 let max_ele = cmp::max(rand_pos,self.head.len()); 
                 if max_ele> self.head.len() {
-                    //println!("---enter here---, rand_pos={}, max_ele is {}",rand_pos, max_ele);
                     let self_head_len = self.head.len();
                     for _ in self_head_len..max_ele {
-                        let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
+                        //let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
+                        let mut new_n_node = Node::new_n_inf();
+                        let  new_p_node = Node::new_p_inf();
+                        new_n_node.next = Box::into_raw(Box::new(new_node.clone())) ;
+                        //new_node.next = Box::into_raw(Box::new(new_p_node.clone())) ;
                         unsafe{
-                            (*new_node_raw).down = ptr_start;
+                            (*new_n_node.next).next = Box::into_raw(Box::new(new_p_node.clone())) ;
                         }
-                        self.head.push(new_node_raw);
+                        new_node.down = ptr_start;
+                        //unsafe{
+                        //    (*new_node_raw).down = ptr_start;
+                        //}
+                        self.head.push(Box::into_raw(Box::new(new_n_node.clone())));
+                        //self.head.push(new_node_raw);
                         ptr_start = self.head[self.head.len()-1];
                     }
                 }
