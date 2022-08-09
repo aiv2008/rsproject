@@ -19,8 +19,8 @@ pub struct SkipList{
 #[derive(Clone)]
 struct Node{
     val: i32,
-    //link: Link,
     next: *mut Node,
+    pre: *mut Node,
     down: *mut Node,
 }
 
@@ -94,6 +94,7 @@ impl SkipList {
 
     pub fn iter(&self){
         //for ptr_node in &self.head{
+        //vector倒序输出    
         for i in 0..self.head.len() {
             println!("--begin---");
             //let mut ptr_mut = *ptr_node;
@@ -101,7 +102,7 @@ impl SkipList {
             while !ptr_mut.is_null() {
                 unsafe{
                     //遇到头节点和尾节点不访问
-                    if (*ptr_mut).val != std::i32::MAX &&  (*ptr_mut).val != std::i32::MIN {
+                    if true || ( (*ptr_mut).val != std::i32::MAX &&  (*ptr_mut).val != std::i32::MIN) {
                         print!("{}: {:?}, ", (*ptr_mut).val, ptr_mut);
                         if !(*ptr_mut).next.is_null(){
                             print!("{}: {:?}, ",(*(*ptr_mut).next).val, (*ptr_mut).next);
@@ -142,12 +143,15 @@ impl SkipList {
                 let mut i:i32 = (pos as i32) -1;
                 let mut ptr_mut: *mut Node = ptr::null_mut();
                 let mut ptr_start: *mut Node = ptr::null_mut();
-                while i >=0 {
-                    ptr_start = self.head[i as usize];
-                    ptr_mut = ptr_start;
+                while i >=0 {//从随机生成的第i层开始插入
+                    //ptr_start = self.head[i as usize];
+                    ptr_mut = self.head[i as usize];
+                    //ptr_mut = ptr_start;
                     unsafe{
+                        //ptr_start取第一个节点（负无穷大）后的那个节点
+                        ptr_start =(*ptr_mut).next; 
                         while !(*ptr_mut).next.is_null(){
-                            if _val < (*(*ptr_mut).next).val{
+                            if _val < (*(*ptr_mut).next).val{//若输入的节点小于当前节点的下一个节点next，则在当前节点与下个节点next之间插入该输入节点
                                 let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
                                 (*new_node_raw).next = (*ptr_mut).next;
                                 (*ptr_mut).next = new_node_raw;
@@ -177,20 +181,15 @@ impl SkipList {
                 if max_ele> self.head.len() {
                     let self_head_len = self.head.len();
                     for _ in self_head_len..max_ele {
-                        //let mut new_node_raw: *mut _ = Box::into_raw(Box::new(new_node.clone()));
                         let mut new_n_node = Node::new_n_inf();
                         let  new_p_node = Node::new_p_inf();
                         new_n_node.next = Box::into_raw(Box::new(new_node.clone())) ;
-                        //new_node.next = Box::into_raw(Box::new(new_p_node.clone())) ;
                         unsafe{
                             (*new_n_node.next).next = Box::into_raw(Box::new(new_p_node.clone())) ;
+                            println!("ptr_start={:?}", ptr_start);
+                            (*new_n_node.next).down = ptr_start; 
                         }
-                        new_node.down = ptr_start;
-                        //unsafe{
-                        //    (*new_node_raw).down = ptr_start;
-                        //}
                         self.head.push(Box::into_raw(Box::new(new_n_node.clone())));
-                        //self.head.push(new_node_raw);
                         ptr_start = self.head[self.head.len()-1];
                     }
                 }

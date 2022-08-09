@@ -5,7 +5,7 @@ fn main() {
     //println!("{}", rand_pos);
     let mut sl = my_skip_list::SkipList::new();
     //let v = vec![9,8,7,6,45,21,1,23];
-    let v = vec![9,8,45,];
+    let v = vec![9,8,];
     for  i in &v{
         sl.insert(*i);
         //println!("sl.head.len={}", sl.len());
