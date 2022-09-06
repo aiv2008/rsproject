@@ -130,32 +130,29 @@ impl AvlTree {
         _node.depth
     }
 
-   fn rotate(&mut self, mut _node: Node)->(){
+   fn rotate(&mut self, _ptr_node: *mut Node)->(){
        //左右孩子节点深度相差超过2， 进行旋 转
-        if _node.depth < -1  {//左旋    
-            let ptr_right: *mut Node = _node.right;
-            unsafe{
-                (*((*ptr_right).left)).parent = &mut _node as *mut _;
-                _node.right = (*ptr_right).left;
-                (*ptr_right).left = &mut _node as *mut _;
-                _node.parent = ptr_right;
-                self.iterCaculateDepth(&mut (*ptr_right));
+       unsafe{
+            if (*_ptr_node).depth < -1  {//左旋    
+                    let ptr_right: *mut Node = (*_ptr_node).right;
+                    (*((*ptr_right).left)).parent = _ptr_node;
+                    (*_ptr_node).right = (*ptr_right).left;
+                    (*ptr_right).left =  _ptr_node;
+                    (*_ptr_node).parent = ptr_right;
+                    self.iterCaculateDepth(&mut (*ptr_right));
+            }else if (*_ptr_node).depth > 1{//右旋 
+                    let ptr_left: *mut Node = (*_ptr_node).left;
+                    (*((*ptr_left).right)).parent = _ptr_node;
+                    (*_ptr_node).left = (*ptr_left).right;
+                    (*ptr_left).right =  _ptr_node;
+                    (*_ptr_node).parent = ptr_left;
+                    self.iterCaculateDepth(&mut (*ptr_left));
             }
-        }else if _node.depth > 1{//右旋 
-            let ptr_left: *mut Node = _node.left;
-            unsafe{
-                (*((*ptr_left).right)).parent = &mut _node as *mut _;
-                _node.left = (*ptr_left).right;
-                (*ptr_left).right = &mut _node as *mut _;
-                _node.parent = ptr_left;
-                self.iterCaculateDepth(&mut (*ptr_left));
-            }
-        }
-
-        unimplemented!();
+       }
+        //unimplemented!();
    }
 
-   pub fn insert(&self,_data: i32)->(){
+   pub fn insert(&mut self,_data: i32)->(){
         if self.root.is_null(){
             let mut root = Node::new(_data);
             let mut left = Node::null_new();
@@ -171,8 +168,8 @@ impl AvlTree {
             unsafe{
                 if (*ptr_node).data.is_null() {
                     let ptr_parent: *mut _ = (*ptr_node).parent;
-                    if *(*ptr_parent).data < _data {
-                        let mut new_node = Node::new(_data);
+                    let mut new_node = Node::new(_data);
+                    if *(*ptr_parent).data < _data {//新插入的节点小于当前节点
                         new_node.parent = ptr_parent;
                         (*ptr_node).parent = &mut new_node as *mut _;
                         new_node.right = ptr_node;
@@ -181,11 +178,29 @@ impl AvlTree {
                         let mut new_left = Node::null_new(); 
                         new_left.parent = &mut new_node as *mut _;
                         new_node.left = &mut new_left as *mut _;
+                    }else if *(*ptr_parent).data > _data {
+                        new_node.parent = ptr_parent;
+                        (*ptr_node).parent = &mut new_node as *mut _;
+                        new_node.left = ptr_node;
+                        (*ptr_parent).left = &mut new_node as *mut _;
+                        //add a new null left node
+                        let mut new_right = Node::null_new(); 
+                        new_right.parent = &mut new_node as *mut _;
+                        new_node.right = &mut new_right as *mut _;
+                    }
+                    let mut ptr_mut: *mut _ = new_node.parent;
+                    while !(*ptr_mut).parent.is_null() {//reach the root , break the loop
+                        if (*ptr_mut).depth <= -2 || (*ptr_mut).depth >= 2 {
+                            self.rotate(ptr_mut);
+                            self.iterCaculateDepth(&mut (*ptr_mut)) ;
+                            break;
+                        }
+                        ptr_mut = (*ptr_mut).parent;
                     }
                 }             
             }
         }
-        unimplemented!();
+        //unimplemented!();
    }
 
    pub fn delete(&self, _data: i32)->(){
