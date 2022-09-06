@@ -169,7 +169,20 @@ impl AvlTree {
         }else{
             let ptr_node = self.search(_data);
             unsafe{
-                
+                if (*ptr_node).data.is_null() {
+                    let ptr_parent: *mut _ = (*ptr_node).parent;
+                    if *(*ptr_parent).data < _data {
+                        let mut new_node = Node::new(_data);
+                        new_node.parent = ptr_parent;
+                        (*ptr_node).parent = &mut new_node as *mut _;
+                        new_node.right = ptr_node;
+                        (*ptr_parent).right = &mut new_node as *mut _;
+                        //add a new null left node
+                        let mut new_left = Node::null_new(); 
+                        new_left.parent = &mut new_node as *mut _;
+                        new_node.left = &mut new_left as *mut _;
+                    }
+                }             
             }
         }
         unimplemented!();
