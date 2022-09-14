@@ -22,7 +22,7 @@ struct Node{
 //    //depth: u32,
 //}
 
-struct AvlTree{
+pub struct AvlTree{
     root: *mut Node,
     //root: Link,
 }
@@ -130,7 +130,7 @@ impl AvlTree {
         _node.depth
     }
 
-   fn rotate(&mut self, _ptr_node: *mut Node)->(){
+	fn rotate(&mut self, _ptr_node: *mut Node)->(){
        //左右孩子节点深度相差超过2， 进行旋 转
        unsafe{
             if (*_ptr_node).depth < -1  {//左旋    
@@ -152,8 +152,30 @@ impl AvlTree {
         //unimplemented!();
    }
 
-   pub fn insert(&mut self,_data: i32)->(){
+	pub fn iter(&self){
+		if !self.root.is_null(){
+			println!("---begin----");
+			self.iter_node(self.root);
+		}
+	}
+
+	fn iter_node(&self, _ptr_node: *const Node){
+		if !_ptr_node.is_null(){
+			unsafe{
+				println!("---enter here___");
+				if !(*_ptr_node).data.is_null() {
+					println!("---enter here22222___");
+					println!("data={}", *(*_ptr_node).data);
+					self.iter_node((*_ptr_node).left);
+					self.iter_node((*_ptr_node).right);
+				}
+			}
+		}
+	}
+
+   	pub fn insert(&mut self,_data: i32)->(){
         if self.root.is_null(){
+			println!("---11-----");
             let mut root = Node::new(_data);
             let mut left = Node::null_new();
             let mut right = Node::null_new();
@@ -162,8 +184,17 @@ impl AvlTree {
                 root.right = &mut right as *mut _;
                 left.parent = &mut root as *mut _;
                 right.parent = &mut root as *mut  _;
+				self.root = &mut root as *mut _;
             }
+			
+			unsafe{
+				if self.root.is_null() {
+					println!("hahahahah");
+				}
+				//println!("root={:?}", (*self.root).data);
+			}
         }else{
+			println!("---2-----");
             let ptr_node = self.search(_data);
             unsafe{
                 if (*ptr_node).data.is_null() {
